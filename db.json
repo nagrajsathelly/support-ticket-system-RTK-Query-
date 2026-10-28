@@ -54,5 +54,28 @@
       "createdAt": "2026-10-28T09:13:13.116Z",
       "id": "mYGfITU"
     }
+  ],
+  "comments": [
+    {
+      "id": "1",
+      "ticketId": "1",
+      "author": "Rahul Sharma",
+      "message": "I tried resetting my password twice, but the link fails.",
+      "createdAt": "2026-10-25T10:00:00.000Z"
+    },
+    {
+      "id": "2",
+      "ticketId": "1",
+      "author": "Support Agent",
+      "message": "We are investigating the issue. Please try requesting a new link.",
+      "createdAt": "2026-10-25T10:15:00.000Z"
+    },
+    {
+      "ticketId": "fkUh02u",
+      "author": "Support Agent",
+      "message": "please update this ticket",
+      "createdAt": "2026-10-28T10:55:39.930Z",
+      "id": "8VO1yI_"
+    }
   ]
 }

@@ -23,6 +23,16 @@ export interface TicketsResponse {
   total: number;
 }
 
+export interface TicketComment {
+  id: string;
+  ticketId: string;
+  author: string;
+  message: string;
+  createdAt: string;
+}
+
+export type NewComment = Omit<TicketComment, "id">;
+
 export type NewTicket = Omit<Ticket, "id">;
 
 export const ticketsApi = createApi({
@@ -30,7 +40,7 @@ export const ticketsApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:3001/",
   }),
-  tagTypes: ["Ticket"],
+  tagTypes: ["Ticket", "Comment"],
   endpoints: (builder) => ({
     getTickets: builder.query<TicketsResponse, TicketFilters>({
       query: ({ search, status, priority, page, limit }) => ({
@@ -75,6 +85,25 @@ export const ticketsApi = createApi({
       }),
       invalidatesTags: ["Ticket"],
     }),
+    getTicketById: builder.query<Ticket, string>({
+      query: (id) => `tickets/${id}`,
+      providesTags: ["Ticket"],
+    }),
+    getComments: builder.query<TicketComment[], string>({
+      query: (ticketId) => ({
+        url: "comments",
+        params: { ticketId },
+      }),
+      providesTags: ["Comment"],
+    }),
+    addComment: builder.mutation<TicketComment, NewComment>({
+      query: (comment) => ({
+        url: "comments",
+        method: "POST",
+        body: comment,
+      }),
+      invalidatesTags: ["Comment"],
+    }),
   }),
 });
 
@@ -83,4 +112,7 @@ export const {
   useCreateTicketMutation,
   useUpdateTicketMutation,
   useDeleteTicketMutation,
+  useGetTicketByIdQuery,
+  useGetCommentsQuery,
+  useAddCommentMutation
 } = ticketsApi;
