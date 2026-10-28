@@ -1,0 +1,58 @@
+{
+  "tickets": [
+    {
+      "id": "1",
+      "title": "Unable to reset password",
+      "description": "The password reset link is not working.",
+      "customer": "Rahul Sharma",
+      "priority": "Low",
+      "status": "Open",
+      "createdAt": "2026-10-25T09:30:00.000Z"
+    },
+    {
+      "title": "Profile edit is not working",
+      "description": "When i click on edit profile nothing happening",
+      "customer": "reeza",
+      "priority": "Medium",
+      "status": "Open",
+      "createdAt": "2026-10-27T18:18:00.241Z",
+      "id": "e2o9D3o"
+    },
+    {
+      "title": "Password not working",
+      "description": "Generated password is not working for app",
+      "customer": "josh",
+      "priority": "Medium",
+      "status": "Open",
+      "createdAt": "2026-10-28T09:02:51.692Z",
+      "id": "fkUh02u"
+    },
+    {
+      "title": "system down",
+      "description": "system down",
+      "customer": "Rahul Sharma",
+      "priority": "Medium",
+      "status": "Open",
+      "createdAt": "2026-10-28T09:12:37.322Z",
+      "id": "W6PPSFi"
+    },
+    {
+      "title": "Internet down",
+      "description": "NA",
+      "customer": "Rahul Sharma",
+      "priority": "High",
+      "status": "Open",
+      "createdAt": "2026-10-28T09:12:55.192Z",
+      "id": "13WssSb"
+    },
+    {
+      "title": "Access blocked",
+      "description": "Access blocked",
+      "customer": "josh",
+      "priority": "Medium",
+      "status": "Open",
+      "createdAt": "2026-10-28T09:13:13.116Z",
+      "id": "mYGfITU"
+    }
+  ]
+}
