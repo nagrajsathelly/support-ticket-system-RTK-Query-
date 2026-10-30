@@ -30,7 +30,13 @@ const initialFilters: TicketFilters = {
 
 export default function TicketList() {
   const [filters, setFilters] = useState<TicketFilters>(initialFilters);
-  const { data, isLoading, isFetching, isError } = useGetTicketsQuery(filters);
+  const { data, isLoading, isFetching, isError, error, refetch } =
+    useGetTicketsQuery(filters, {
+      pollingInterval: 30000,
+      skipPollingIfUnfocused: true,
+      refetchOnFocus: true,
+      refetchOnReconnect: true,
+    });
   const [createTicket, { isLoading: isCreating }] = useCreateTicketMutation();
   const [updateTicket, { isLoading: isUpdating }] = useUpdateTicketMutation();
   const [deleteTicket, { isLoading: isDeleting }] = useDeleteTicketMutation();
@@ -193,7 +199,13 @@ export default function TicketList() {
             <h2 className="text-xl font-semibold">
               All Tickets ({data?.total ?? 0})
             </h2>
-
+            <button
+              onClick={() => refetch()}
+              disabled={isFetching}
+              className="rounded-lg border px-3 py-2 text-sm disabled:opacity-50"
+            >
+              {isFetching ? "Refreshing..." : "Refresh"}
+            </button>
             <div className="grid gap-3 sm:grid-cols-3">
               <input
                 value={filters.search}

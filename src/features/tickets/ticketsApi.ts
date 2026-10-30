@@ -57,7 +57,16 @@ export const ticketsApi = createApi({
         tickets: response,
         total: Number(meta?.response?.headers.get("X-Total-Count") ?? 0),
       }),
-      providesTags: ["Ticket"],
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.tickets.map(({ id }) => ({
+                type: "Ticket" as const,
+                id,
+              })),
+              { type: "Ticket" as const, id: "LIST" },
+            ]
+          : [{ type: "Ticket" as const, id: "LIST" }],
     }),
     createTicket: builder.mutation<Ticket, NewTicket>({
       query: (newTicket) => ({
@@ -65,7 +74,7 @@ export const ticketsApi = createApi({
         method: "POST",
         body: newTicket,
       }),
-      invalidatesTags: ["Ticket"],
+      invalidatesTags: [{ type: "Ticket", id: "LIST" }],
     }),
     updateTicket: builder.mutation<
       Ticket,
@@ -76,25 +85,50 @@ export const ticketsApi = createApi({
         method: "PATCH",
         body: changes,
       }),
-      invalidatesTags: ["Ticket"],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "Ticket", id },
+        { type: "Ticket", id: "LIST" },
+      ],
+      async onQueryStarted({ id, ...changes }, { dispatch, queryFulfilled }) {
+        const patch = dispatch(
+          ticketsApi.util.updateQueryData("getTicketById", id, (draft) => {
+            Object.assign(draft, changes);
+          }),
+        );
+
+        try {
+          await queryFulfilled;
+        } catch {
+          patch.undo();
+        }
+      },
     }),
     deleteTicket: builder.mutation<{ id: string }, string>({
       query: (id) => ({
         url: `tickets/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Ticket"],
+      invalidatesTags: (_result, _error, id) => [
+        { type: "Ticket", id },
+        { type: "Ticket", id: "LIST" },
+      ],
     }),
     getTicketById: builder.query<Ticket, string>({
       query: (id) => `tickets/${id}`,
-      providesTags: ["Ticket"],
+      providesTags: (_result, _error, id) => [{ type: "Ticket", id }],
     }),
     getComments: builder.query<TicketComment[], string>({
       query: (ticketId) => ({
         url: "comments",
         params: { ticketId },
       }),
-      providesTags: ["Comment"],
+      providesTags: (result, _error, ticketId) => [
+        ...(result ?? []).map(({ id }) => ({
+          type: "Comment" as const,
+          id,
+        })),
+        { type: "Comment", id: `LIST-${ticketId}` },
+      ],
     }),
     addComment: builder.mutation<TicketComment, NewComment>({
       query: (comment) => ({
@@ -102,7 +136,9 @@ export const ticketsApi = createApi({
         method: "POST",
         body: comment,
       }),
-      invalidatesTags: ["Comment"],
+      invalidatesTags: (_result, _error, { ticketId }) => [
+        { type: "Comment", id: `LIST-${ticketId}` },
+      ],
     }),
   }),
 });
@@ -114,5 +150,5 @@ export const {
   useDeleteTicketMutation,
   useGetTicketByIdQuery,
   useGetCommentsQuery,
-  useAddCommentMutation
+  useAddCommentMutation,
 } = ticketsApi;
